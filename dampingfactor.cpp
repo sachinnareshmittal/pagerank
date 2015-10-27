@@ -2,7 +2,9 @@
 #include <vector>
 #include <limits.h>
 using namespace std;
+
 int l =0;
+
 bool mat_multiply(vector<vector<float> > &t_mat, vector<float> &wts){
 	cout<<l<<endl;
 	l++;
@@ -24,6 +26,7 @@ bool mat_multiply(vector<vector<float> > &t_mat, vector<float> &wts){
 	}
 	return true;
 }
+
 int main(){
 	int node_num;
 	cin >> node_num;
