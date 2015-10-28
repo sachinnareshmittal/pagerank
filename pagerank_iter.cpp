@@ -23,6 +23,7 @@ void print_vector(vector<double> &P){
 	cout << endl;
 }
 
+// calculate sum of elements of a vector
 double sum_elements(vector<double> &V){
 	double sum = 0.0;
 	for(int i=0;i<V.size();i++){
