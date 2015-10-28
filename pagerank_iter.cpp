@@ -32,6 +32,15 @@ double sum_elements(vector<double> &V){
 	return sum;
 }
 
+// returns true if both input vectors are equal
+bool cmp(vector<double> &V1, vector<double> &V2){
+	for(int i=0;i<V1.size();i++){
+		if(V1[i] != V2[i])
+			return 0;
+	}
+	return 1;
+}
+
 // count the number of outlinks from each node
 void count_oh(vector<vector<bool> > &G, vector<int> &oh){
 	for(int i=0;i<G.size();i++){
@@ -74,30 +83,63 @@ vector<double> pagerank(vector<vector<bool> > &G, int it, double d){
 	// new pagerank vector
 	vector<double> npg(n);
 
-	while(it--){
-		// print_vector(opg);
-		double dp = 0.0;
-		
-		// pagerank from nodes with no outlinks
-		for(int p=0;p<n;p++){
-			if(oh[p]==0)
-				dp += d*opg[p]/n;
-		}
+	if(it == 0){
+		int t=0;
+		while(true){
+			// print_vector(opg);
+			double dp = 0.0;
+			
+			// pagerank from nodes with no outlinks
+			for(int p=0;p<n;p++){
+				if(oh[p]==0)
+					dp += d*opg[p]/n;
+			}
 
-		// build new pagerank vector
-		for(int p=0;p<n;p++){
-			// pagerank from random jump
-			npg[p] = dp + (1.0-d)/n;
+			// build new pagerank vector
+			for(int p=0;p<n;p++){
+				// pagerank from random jump
+				npg[p] = dp + (1.0-d)/n;
 
-			// pagerank from inlinks
-			for(int ip=0;ip<n;ip++){
-				if(G[ip][p]){
-					npg[p] += d*opg[ip]/oh[ip];
+				// pagerank from inlinks
+				for(int ip=0;ip<n;ip++){
+					if(G[ip][p]){
+						npg[p] += d*opg[ip]/oh[ip];
+					}
 				}
 			}
+			if(cmp(opg,npg))
+				break;
+			opg = npg;
+			t++;
 		}
-		opg = npg;
+		cout << "number of iterations = " << t << endl;
+	}else{
+		while(it--){
+			// print_vector(opg);
+			double dp = 0.0;
+			
+			// pagerank from nodes with no outlinks
+			for(int p=0;p<n;p++){
+				if(oh[p]==0)
+					dp += d*opg[p]/n;
+			}
+
+			// build new pagerank vector
+			for(int p=0;p<n;p++){
+				// pagerank from random jump
+				npg[p] = dp + (1.0-d)/n;
+
+				// pagerank from inlinks
+				for(int ip=0;ip<n;ip++){
+					if(G[ip][p]){
+						npg[p] += d*opg[ip]/oh[ip];
+					}
+				}
+			}
+			opg = npg;
+		}
 	}
+
 	return opg;
 }
 
