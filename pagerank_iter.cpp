@@ -144,7 +144,7 @@ vector<float> pagerank(vector<vector<bool> > &G, int it, float d){
 }
 
 int main(){
-	cout << setprecision(15);
+	cout << setprecision(10);
 	// input number of nodes
 	int node_num;
 	cin >> node_num;
@@ -181,7 +181,7 @@ int main(){
 	// print_vector(pg);
 
 	// print sum of all pageranks
-	cout << "sum of all pageranks = " << sum_elements(pg) << endl;
+	// cout << "sum of all pageranks = " << sum_elements(pg) << endl;
 
 	for(int i=0;i<pg.size();i++){
 		cout << "pagerank[" << i << "]\t" << pg[i] << endl;
