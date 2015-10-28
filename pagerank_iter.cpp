@@ -5,6 +5,7 @@
 #include <iomanip>
 using namespace std;
 
+// print a given matrix
 void print_mat(vector< vector<double> > &P){
 	for(int i=0;i<P.size();i++){
 		for(int j=0;j<P.size();j++){
@@ -14,7 +15,7 @@ void print_mat(vector< vector<double> > &P){
 	}
 }
 
-
+// print a given vector
 void print_vector(vector<double> &P){
 	for(int j=0;j<P.size();j++){
 		cout << P[j] << " ";
