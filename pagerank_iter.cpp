@@ -6,7 +6,7 @@
 using namespace std;
 
 // print a given matrix
-void print_mat(vector< vector<double> > &P){
+void print_mat(vector< vector<float> > &P){
 	for(int i=0;i<P.size();i++){
 		for(int j=0;j<P.size();j++){
 			cout << P[i][j] << " ";
@@ -16,7 +16,7 @@ void print_mat(vector< vector<double> > &P){
 }
 
 // print a given vector
-void print_vector(vector<double> &P){
+void print_vector(vector<float> &P){
 	for(int j=0;j<P.size();j++){
 		cout << P[j] << " ";
 	}
@@ -24,8 +24,8 @@ void print_vector(vector<double> &P){
 }
 
 // calculate sum of elements of a vector
-double sum_elements(vector<double> &V){
-	double sum = 0.0;
+float sum_elements(vector<float> &V){
+	float sum = 0.0;
 	for(int i=0;i<V.size();i++){
 		sum += V[i];
 	}
@@ -33,7 +33,7 @@ double sum_elements(vector<double> &V){
 }
 
 // returns true if both input vectors are equal
-bool cmp(vector<double> &V1, vector<double> &V2){
+bool cmp(vector<float> &V1, vector<float> &V2){
 	for(int i=0;i<V1.size();i++){
 		if(V1[i] != V2[i])
 			return 0;
@@ -65,7 +65,7 @@ void count_ih(vector<vector<bool> > &G, vector<int> &ih){
 	}
 }
 
-vector<double> pagerank(vector<vector<bool> > &G, int it, double d){
+vector<float> pagerank(vector<vector<bool> > &G, int it, float d){
 	// number of nodes
 	int n = G.size();
 
@@ -78,16 +78,16 @@ vector<double> pagerank(vector<vector<bool> > &G, int it, double d){
 	count_ih(G, ih);
 
 	// pagerank vector initialized to 1/N
-	vector<double> opg(n, 1.0/n);
+	vector<float> opg(n, 1.0/n);
 
 	// new pagerank vector
-	vector<double> npg(n);
+	vector<float> npg(n);
 
 	if(it == 0){
 		int t=0;
 		while(true){
 			// print_vector(opg);
-			double dp = 0.0;
+			float dp = 0.0;
 			
 			// pagerank from nodes with no outlinks
 			for(int p=0;p<n;p++){
@@ -116,7 +116,7 @@ vector<double> pagerank(vector<vector<bool> > &G, int it, double d){
 	}else{
 		while(it--){
 			// print_vector(opg);
-			double dp = 0.0;
+			float dp = 0.0;
 			
 			// pagerank from nodes with no outlinks
 			for(int p=0;p<n;p++){
@@ -150,7 +150,7 @@ int main(){
 	cin >> node_num;
 
 	// vector for weight of each vector
-	vector<double> weights(node_num, (1.0/node_num));
+	vector<float> weights(node_num, (1.0/node_num));
 
 	// graph as adjacency matrix
 	vector<vector<bool> >graph(node_num,vector<bool>(node_num,false));
@@ -159,30 +159,33 @@ int main(){
 	int edge_num;
 	cin >> edge_num;
 
+	// number of iterations
+	int it;
+	cin >> it;
+
+	// damping factor
+	float df;
+	cin >> df;
+
 	// takes node pairs as input and contructs graph by filling adjacency matrix
 	for(int i=0;i<edge_num;i++){
 		int n1,n2;
 		cin >> n1 >> n2;
 		graph[n1][n2] = true;
 	}
-
-	// number of iterations
-	int it;
-	cin >> it;
-
-	// damping factor
-	double df;
-	cin >> df;
-
 	// calculating pagerank vector
-	vector<double> pg = pagerank(graph, it, df);
+	vector<float> pg = pagerank(graph, it, df);
 
-	cout << "ranks" << endl;
+	// cout << "ranks" << endl;
 	// print pagerank vector
-	print_vector(pg);
+	// print_vector(pg);
 
 	// print sum of all pageranks
 	cout << "sum of all pageranks = " << sum_elements(pg) << endl;
+
+	for(int i=0;i<pg.size();i++){
+		cout << "pagerank[" << i << "]\t" << pg[i] << endl;
+	}
 
 	return 0;
 }
