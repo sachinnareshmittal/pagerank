@@ -1,7 +1,8 @@
-import socket                                         
+import socket
 import time
 import cPickle as pickle
 import pprint
+import struct
 
 n = 1
 edge_num = 0
@@ -14,7 +15,29 @@ ih = []
 oh = []
 opg = []
 npg = []
+host = "10.0.2.61"
+port = 9996
 
+
+def send_msg(sock, msg):
+	msg = struct.pack('>I', len(msg)) + msg
+	sock.sendall(msg)
+
+def recv_msg(sock):
+	raw_msglen = recvall(sock, 4)
+	if not raw_msglen:
+		return None
+	msglen = struct.unpack('>I', raw_msglen)[0]
+	return recvall(sock, msglen)
+
+def recvall(sock, n):
+	data = ''
+	while len(data) < n:
+		packet = sock.recv(n - len(data))
+		if not packet:
+			return None
+		data += packet
+	return data
 
 def count_oh():
 	global G, edge_num, weights, it, d, pg, ih, oh, opg, npg, n
@@ -36,28 +59,22 @@ def count_ih():
 		ih.append(n_in)
 
 
-# create a socket object
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
-# get local machine name
-host = "10.0.2.61"
-
-port = 9996
 serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# bind to the port
+
 serversocket.bind((host, port))
 
-# queue up to 5 requests
 serversocket.listen(1000)
 
 while True:
-	# establish a connection
 	clientsocket,addr = serversocket.accept()
 	print("Got a connection from %s" % str(addr))
-	# print "haan bn gya"
-	s = clientsocket.recv(1024)
+	
+	s = recv_msg(clientsocket)
 	print "recieved!!"
 	dic = pickle.loads(s)
+
 	if dic['flag'] == 1:
 		G = dic['graph']
 		n = dic['n']
@@ -65,8 +82,6 @@ while True:
 		count_ih()
 		count_oh()
 	else:
-		# pp = pprint.PrettyPrinter(indent=4)
-		# pp.pprint(dic)
 		opg = dic['opg']
 		start = dic['start']
 		end = dic['end']
@@ -83,10 +98,7 @@ while True:
 				if G[ip][p] == 1:
 					npg[p] += float(d*float(opg[ip])/float(oh[ip]))
 
-		# currentTime = time.ctime(time.time()) + "\r\n"
-		# c = {'fuck': 'yeah', 'shut':'up'}
-		# print npg
 		x = pickle.dumps(npg,-1)
-		clientsocket.send(x)
+		send_msg(clientsocket,x)
 		print "sent!!"
 	clientsocket.close()
